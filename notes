@@ -1,0 +1,61 @@
+fileUpload needs to know who the session user is
+server needs a session cookie
+session needs oauth from mastodon
+need to be able to mock out oauth for dev
+
+
+
+
+
+
+
+
+  {
+  "jsonapi": {
+    "version": "1.0"
+  },
+  "meta": {
+    "count": 1
+  },
+  "links": {
+    "self": "/rest/campers"
+  },
+  "data": [
+    {
+      "type": "campers",
+      "id": "XpD2hqWT06uBRlq",
+      "attributes": {
+        "name": "objelisks",
+        "url": null,
+        "created": null
+      },
+      "relationships": {
+        "display-pic": {
+          "links": {
+            "self": "/rest/campers/XpD2hqWT06uBRlq/relationships/display-pic",
+            "related": "/rest/campers/XpD2hqWT06uBRlq/display-pic"
+          },
+          "data": {
+            "type": "pics",
+            "id": "O4XhK3E6XXdQuCK"
+          }
+        },
+        "pics": {
+          "links": {
+            "self": "/rest/campers/XpD2hqWT06uBRlq/relationships/pics",
+            "related": "/rest/campers/XpD2hqWT06uBRlq/pics"
+          },
+          "data": [
+            {
+              "type": "pics",
+              "id": "O4XhK3E6XXdQuCK"
+            }
+          ]
+        }
+      },
+      "links": {
+        "self": "/rest/campers/XpD2hqWT06uBRlq"
+      }
+    }
+  ]
+}
