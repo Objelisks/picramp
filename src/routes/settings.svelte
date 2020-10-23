@@ -22,8 +22,9 @@
     })
       .then((res) => res.text())
       .then((res) => {
+        // update locally
         json.included = [
-          ...json.included,
+          ...(json.included ?? []),
           {
             id: res,
             attributes: {
@@ -32,15 +33,19 @@
           },
         ];
       })
-      .catch((err) => console.error(error));
+      .catch((err) => console.error(err));
   };
+
   const deletePic = (pic) => {
+    // TODO: clean up old picrews when last pic deleted
     return fetch(`${window.location.origin}/rest/pic/${pic.id}`, {
       method: "DELETE",
     }).then(() => {
+      // update locally
       json.included = json.included.filter((jsonPic) => jsonPic.id !== pic.id);
     });
   };
+
   const selectDisplayPic = (pic) => {
     return fetch(
       `${window.location.origin}/rest/camper/${$session.camper.id}`,
@@ -60,6 +65,7 @@
         }),
       }
     ).then(() => {
+      // update locally
       json.data.relationships["display-pic"] = { data: { id: pic.id } };
     });
   };

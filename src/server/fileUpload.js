@@ -15,6 +15,7 @@ app.use(
   })
 );
 
+// fetch the picrew name from the web site title
 const PICREW = `https://picrew.me/image_maker`;
 const picrewName = (picrewUrl) =>
   fetch(`${PICREW}/${picrewUrl}`)
@@ -36,7 +37,9 @@ app.post("/", async (req, res) => {
     async (err) => {
       if (err) return res.status(500).send(err);
 
-      // extract picrew url id
+      // TODO: turn this all into an IO hook in fortune
+
+      // extract picrew url, id
       const nameParts = file.name.split("_");
       const picrewUrl = nameParts[0];
       const picId = nameParts[1]; // TODO: dedupe uploads
@@ -50,10 +53,11 @@ app.post("/", async (req, res) => {
           },
         })
         .then(async (res) => {
-          console.log("found", JSON.stringify(res));
           if (res.payload.count > 0) {
+            // found an existing picrew
             return res.payload.records[0];
           } else {
+            // create a new picrew
             return picrewApi
               .create("picrew", [
                 {
@@ -80,7 +84,7 @@ app.post("/", async (req, res) => {
       });
       const pic = picResponse.payload.records[0];
 
-      // update the newly created picrew with a display pic
+      // update a newly created picrew with a display pic
       if (newPicrew) {
         picrewApi.update("picrew", {
           id: picrew.id,
@@ -90,6 +94,7 @@ app.post("/", async (req, res) => {
         });
       }
 
+      // return the newly created pic id
       res.send(pic.id);
     }
   );

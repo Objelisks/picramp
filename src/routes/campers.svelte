@@ -4,7 +4,9 @@
   import { useApi } from "../shared/useApi.js";
 
   let json = null;
-  useApi("/rest/campers?include=displayPic").then((res) => (json = res));
+  useApi("/rest/campers?include=displayPic&sort=-created").then(
+    (res) => (json = res)
+  );
 </script>
 
 <h2>all of the campers</h2>

@@ -3,7 +3,8 @@
   import Card from "../components/Card.svelte";
   import { useApi } from "../shared/useApi";
 
-  let promise = useApi("/rest/pics");
+  let json = null;
+  useApi("/rest/pics?sort=-created").then((res) => (json = res));
 </script>
 
 <style>
@@ -49,13 +50,11 @@
 <br />
 
 <DisplayGrid>
-  {#await promise then json}
-    {#if json}
-      {#each json.data as pic (pic.id)}
-        <Card
-          img={pic.attributes.url}
-          link={`/camper/${pic.relationships.camper.data.id}`} />
-      {/each}
-    {/if}
-  {/await}
+  {#if json?.data}
+    {#each json.data as pic (pic.id)}
+      <Card
+        img={pic.attributes.url}
+        link={`/camper/${pic.relationships.camper?.data?.id}`} />
+    {/each}
+  {/if}
 </DisplayGrid>

@@ -4,7 +4,9 @@
   import { useApi } from "../shared/useApi.js";
 
   let json = null;
-  useApi("/rest/picrews?include=displayPic").then((result) => (json = result));
+  useApi("/rest/picrews?include=displayPic&sort=-created").then(
+    (result) => (json = result)
+  );
 </script>
 
 <h2>all of the picrews</h2>
