@@ -1,12 +1,16 @@
 <script>
+  import { onMount } from "svelte";
+
   import Card from "../components/Card.svelte";
   import DisplayGrid from "../components/DisplayGrid.svelte";
-  import { useApi } from "../shared/useApi.js";
+  import { api } from "../shared/useApi.js";
 
   let json = null;
-  useApi("/rest/campers?include=displayPic&sort=-created").then(
-    (res) => (json = res)
-  );
+  onMount(async () => {
+    api("/rest/campers?include=displayPic&sort=-created").then(
+      (res) => (json = res)
+    );
+  });
 </script>
 
 <h2>all of the campers</h2>

@@ -6,12 +6,15 @@
   import { stores } from "@sapper/app";
   const { preloading, page, session } = stores();
 
-  import { useApi } from "../shared/useApi.js";
+  import { api } from "../shared/useApi.js";
+  import { onMount } from "svelte";
 
   let json = null;
-  useApi(`/rest/camper/${$session.camper.id}?include=pics`).then(
-    (result) => (json = result)
-  );
+  onMount(async () => {
+    api(`/rest/camper/${$session.camper.id}?include=pics`).then(
+      (result) => (json = result)
+    );
+  });
 
   const createPic = (pic) => {
     const formData = new FormData();

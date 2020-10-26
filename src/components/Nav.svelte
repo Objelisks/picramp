@@ -67,6 +67,16 @@
     </li>
     <li>
       <a
+        aria-current={segment === 'guess' ? 'page' : undefined}
+        href="guess">guess</a>
+    </li>
+    <li>
+      <a
+        aria-current={segment === 'picress' ? 'page' : undefined}
+        href="picress">picress</a>
+    </li>
+    <li>
+      <a
         aria-current={segment === 'settings' ? 'page' : undefined}
         href="settings">settings</a>
     </li>

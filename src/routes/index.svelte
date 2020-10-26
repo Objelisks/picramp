@@ -1,10 +1,13 @@
 <script>
   import DisplayGrid from "../components/DisplayGrid.svelte";
   import Card from "../components/Card.svelte";
-  import { useApi } from "../shared/useApi";
+  import { api } from "../shared/useApi";
+  import { onMount } from "svelte";
 
   let json = null;
-  useApi("/rest/pics?sort=-created").then((res) => (json = res));
+  onMount(async () => {
+    api("/rest/pics?sort=-created").then((res) => (json = res));
+  });
 </script>
 
 <style>
