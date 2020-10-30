@@ -22,6 +22,7 @@ passport.use(
           name: profile.username,
         },
       });
+      console.log(res);
       let user = null;
       if (res.count > 0) {
         user = res[0];
@@ -31,6 +32,7 @@ passport.use(
           url: `${profile.url}`,
           created: new Date(),
         };
+        console.log(record);
         const created = await picrewApi.create("camper", record);
         user = created.payload.records[0];
       }
