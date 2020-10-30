@@ -38,7 +38,18 @@ passport.use(
   )
 );
 
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
 express()
+  .use(session({ secret: "fgsfds" }))
+  .use(passport.initialize())
+  .use(passport.session())
   .get("/picramp/auth/redirect", passport.authenticate("mastodon"))
   .use((req, res, next) => {
     if (dev) {
@@ -60,9 +71,6 @@ express()
     "/picramp",
     compression({ threshold: 0 }),
     sirv("static", { dev }),
-    session({ secret: "fgsfds" }),
-    passport.initialize(),
-    passport.session(),
     sapper.middleware({
       session: (req, res) => ({
         camper: req.user, //await picrewApi.find("camper", req.id),
