@@ -12,9 +12,10 @@ import sessionData from "./server/session.js";
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === "development";
 
-express() // You can also use Express
+express()
   .use((req, res, next) => {
     if (dev) {
+      // cheating
       req.headers["Remote-User"] = "eXHk3kPmqbPLMr6";
     }
     next();

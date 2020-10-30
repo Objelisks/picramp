@@ -74,6 +74,10 @@
   };
 </script>
 
+{#if json}
+  <p>logged in as: {json.data?.attributes.name}</p>
+{/if}
+
 <DisplayGrid small>
   {#if json?.included}
     {#each json.included as pic}

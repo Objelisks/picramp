@@ -1,5 +1,6 @@
 <script>
   export let segment;
+  let loggedIn = false;
 </script>
 
 <style>
@@ -46,6 +47,10 @@
     padding: 1em 0.5em;
     display: block;
   }
+
+  button {
+    margin: 1.5em 0.5em;
+  }
 </style>
 
 <nav>
@@ -72,13 +77,16 @@
     </li>
     <li>
       <a
-        aria-current={segment === 'picress' ? 'page' : undefined}
-        href="picress">picress</a>
+        aria-current={segment === 'picrewss' ? 'page' : undefined}
+        href="picrewss">picrewss</a>
     </li>
     <li>
       <a
         aria-current={segment === 'settings' ? 'page' : undefined}
         href="settings">settings</a>
+    </li>
+    <li class:button={true}>
+      {#if loggedIn}<button>logout</button>{:else}<button>login</button>{/if}
     </li>
   </ul>
 </nav>

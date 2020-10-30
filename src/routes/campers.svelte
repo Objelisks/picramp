@@ -20,7 +20,7 @@
     {#each json.data as camper, index (camper.id)}
       <Card
         link={`/camper/${camper.id}`}
-        img={json.included?.[index]?.attributes?.url}
+        img={json.included?.find((include) => include.id === camper.relationships?.['display-pic']?.data?.id)?.attributes.url}
         label={camper.attributes.name} />
     {/each}
   {/if}

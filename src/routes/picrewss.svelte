@@ -4,7 +4,7 @@
   import Picross from "../components/Picross.svelte";
 
   let randomPic = null;
-  let size = 20;
+  let size = 10;
 
   onMount(async () => {
     restart();
@@ -26,10 +26,10 @@
   const finished = () => {};
 </script>
 
-<h2>picrew picross (picress)</h2>
+<h2>picrew picross (picrewss)</h2>
 
 {#if randomPic}
-  <!-- <Picross url={'/images/212703_DZ6A7hlm.png'} {size} on:complete={finished} /> -->
+  <!-- <Picross url={'/images/230257_Ec2Adwcv.png'} {size} on:complete={finished} /> -->
   <Picross url={randomPic.attributes.url} {size} on:complete={finished} />
 {/if}
 
@@ -40,3 +40,8 @@ size:
   <option>{15}</option>
   <option>{20}</option>
 </select>
+
+<button
+  on:click={() => {
+    restart();
+  }}>gimme new one</button>
