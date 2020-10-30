@@ -33,7 +33,11 @@ passport.use(
         };
         user = await picrewApi.create("camper", record);
       }
-      return cb(null, user);
+      return cb(null, {
+        id: user.id,
+        name: user.name,
+        url: user.url,
+      });
     }
   )
 );
@@ -45,7 +49,26 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((user, done) => {
   done(null, user);
 });
+/*
+objelisks@ancient-pebble:~/code/picramp$ PORT=4200 npm start
 
+> picramp@0.0.1 start /home/objelisks/code/picramp
+> node __sapper__/build
+
+Starting server on port 4200
+express-session deprecated undefined resave option; provide resave option __sapper__/build/server/server.js:8196:35
+express-session deprecated undefined saveUninitialized option; provide saveUninitialized option __sapper__/build/server/server.js:8196:35
+Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+Error: Failed to serialize session data: Cannot stringify arbitrary non-POJOs
+    at /home/objelisks/code/picramp/__sapper__/build/server/server.js:7779:31
+    at try_serialize (/home/objelisks/code/picramp/__sapper__/build/server/server.js:7871:13)
+    at /home/objelisks/code/picramp/__sapper__/build/server/server.js:7778:41
+    at Generator.next (<anonymous>)
+    at fulfilled (/home/objelisks/code/picramp/__sapper__/build/server/server.js:3217:58)
+
+*/
 express()
   .use(session({ secret: "fgsfds" }))
   .use(passport.initialize())
