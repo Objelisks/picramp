@@ -6,7 +6,7 @@ import passport from "passport";
 import MastodonStrategy from "passport-mastodon";
 
 import creds from "./creds.json";
-import { picrewApi } from "./server/picrewApi.js";
+import store, { picrewApi } from "./server/picrewApi.js";
 import fileUpload from "./server/fileUpload.js";
 
 const { PORT, NODE_ENV } = process.env;
@@ -97,14 +97,14 @@ express()
     })
   )
   .use("/picramp/upload", fileUpload)
-  .use("/picramp/rest", picrewApi)
+  .use("/picramp/rest", store)
   .use(
     "/picramp",
     compression({ threshold: 0 }),
     sirv("static", { dev }),
     sapper.middleware({
       session: (req, res) => ({
-        camper: { id: req.headers["Remote-User"] }, //await picrewApi.find("camper", req.id),
+        camper: req.user, //await picrewApi.find("camper", req.id),
       }),
     })
   )
