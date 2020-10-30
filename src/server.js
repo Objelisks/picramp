@@ -32,6 +32,7 @@ passport.use(
           created: new Date(),
         };
         user = await picrewApi.create("camper", record);
+        console.log("user", user);
       }
       return cb(null, {
         id: user.id,
@@ -72,7 +73,7 @@ express()
     "/picramp/login/redirect",
     passport.authorize("mastodon", { failureRedirect: "/picramp" }),
     (req, res) => {
-      console.log(req);
+      res.redirect("/picramp");
     }
   )
   .use("/picramp/upload", fileUpload)
@@ -83,7 +84,7 @@ express()
     sirv("static", { dev }),
     sapper.middleware({
       session: (req, res) => ({
-        camper: req.user,
+        camper: req.account,
       }),
     })
   )
