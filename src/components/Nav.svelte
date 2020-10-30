@@ -87,8 +87,8 @@
     </li>
     <li class:login={true}>
       {#if loggedIn}
-        <a href="/logout">logout</a>
-      {:else}<a href="/login">login</a>{/if}
+        <a href="/picramp/logout">logout</a>
+      {:else}<a href="/picramp/login">login</a>{/if}
     </li>
   </ul>
 </nav>
