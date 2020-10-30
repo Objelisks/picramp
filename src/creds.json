@@ -1,6 +1,6 @@
 {
-    "clientID": "",
-    "clientSecret": "",
+    "clientID": "-S-WSaXOf0x35RW5Pqdk1iQjfqglq3UDKGJtdACsEkY",
+    "clientSecret": "L7NXMECMnwUOHX10TvFECxjuV0cE_scar38W1JOuHl4",
     "domain": "friend.camp",
-    "callbackURL": ""
+    "callbackURL": "urn:ietf:wg:oauth:2.0:oob"
 }

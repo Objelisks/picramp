@@ -48,8 +48,8 @@
     display: block;
   }
 
-  button {
-    margin: 1.5em 0.5em;
+  .login {
+    float: right;
   }
 </style>
 
@@ -85,8 +85,10 @@
         aria-current={segment === 'settings' ? 'page' : undefined}
         href="settings">settings</a>
     </li>
-    <li class:button={true}>
-      {#if loggedIn}<button>logout</button>{:else}<button>login</button>{/if}
+    <li class:login={true}>
+      {#if loggedIn}
+        <a href="/logout">logout</a>
+      {:else}<a href="/login">login</a>{/if}
     </li>
   </ul>
 </nav>
