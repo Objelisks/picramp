@@ -48,8 +48,8 @@ const store = fortune(
 
 const listener = fortuneHTTP(store, {
   serializers: [
-    [jsonApiSerializer, { prefix: "/rest" }],
-    [htmlSerializer, { prefix: "/rest" }],
+    [jsonApiSerializer, { prefix: "/picramp/rest" }],
+    [htmlSerializer, { prefix: "/picramp/rest" }],
     [formDataSerializer],
     [formUrlEncodedSerializer],
   ],

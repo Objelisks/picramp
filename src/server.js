@@ -70,7 +70,10 @@ express()
   )
   .get(
     "/picramp/login/redirect",
-    passport.authorize("mastodon", { failureRedirect: "/picramp" })
+    passport.authorize("mastodon", { failureRedirect: "/picramp" }),
+    (req, res) => {
+      console.log(req);
+    }
   )
   .use("/picramp/upload", fileUpload)
   .use("/picramp/rest", store)
@@ -80,7 +83,7 @@ express()
     sirv("static", { dev }),
     sapper.middleware({
       session: (req, res) => ({
-        camper: req.user, //await picrewApi.find("camper", req.id),
+        camper: req.user,
       }),
     })
   )
