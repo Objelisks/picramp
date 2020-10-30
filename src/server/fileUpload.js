@@ -38,6 +38,8 @@ app.post("/", async (req, res) => {
       if (err) return res.status(500).send(err);
 
       // TODO: turn this all into an IO hook in fortune
+      const userId = req.account?.id;
+      if (!userId) return res.status(400).send("Not logged in.");
 
       // extract picrew url, id
       const nameParts = file.name.split("_");
@@ -72,8 +74,6 @@ app.post("/", async (req, res) => {
               });
           }
         });
-
-      const userId = req.headers["Remote-User"];
 
       // create the pic entry
       const picResponse = await picrewApi.create("pic", {

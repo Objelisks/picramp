@@ -29,7 +29,7 @@ passport.use(
       } else {
         const record = {
           name: profile.username,
-          url: `${profile.url}`,
+          url: profile.profileUrl,
           created: new Date(),
         };
         console.log(record);
@@ -57,13 +57,6 @@ express()
   .use(session({ secret: "fgsfds" }))
   .use(passport.initialize())
   .use(passport.session())
-  .use((req, res, next) => {
-    if (dev) {
-      // cheating
-      req.headers["Remote-User"] = "eXHk3kPmqbPLMr6";
-    }
-    next();
-  })
   .get(
     "/picramp/login",
     passport.authenticate("mastodon", {
@@ -85,9 +78,19 @@ express()
     compression({ threshold: 0 }),
     sirv("static", { dev }),
     sapper.middleware({
-      session: (req, res) => ({
-        camper: req.account,
-      }),
+      session: (req, res) => {
+        console.log(
+          "user",
+          req.user,
+          "account",
+          req.account,
+          "passport",
+          passport.isAuthenticated
+        );
+        return {
+          camper: req.account,
+        };
+      },
     })
   )
   .listen(PORT, (err) => {
