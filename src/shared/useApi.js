@@ -1,7 +1,7 @@
 import fetch from "isomorphic-fetch";
 
 export const api = (route) => {
-  return fetch(`${window.location.origin}${route}`)
+  return fetch(`${window.location.origin}/picramp${route}`)
     .then((res) => res.json())
     .then((parsed) => {
       if (parsed?.errors?.length > 0) {
@@ -9,4 +9,8 @@ export const api = (route) => {
       }
       return parsed;
     });
+};
+
+export const img = (route) => {
+  return route ? `/picramp${route}` : route;
 };

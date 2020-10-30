@@ -1,5 +1,5 @@
 <script>
-  import { api } from "../shared/useApi";
+  import { api, img } from "../shared/useApi";
   import Card from "../components/Card.svelte";
   import { onMount } from "svelte";
 
@@ -75,7 +75,7 @@
 <h2>guess the camper!</h2>
 
 {#if randomPic && guessableCampers}
-  <Card img={randomPic.attributes.url} />
+  <Card img={img(randomPic.attributes.url)} />
   <p>who is it??</p>
   <span class:points={true}>points: {points}</span>
   <ul>

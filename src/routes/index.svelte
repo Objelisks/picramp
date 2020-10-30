@@ -1,7 +1,7 @@
 <script>
   import DisplayGrid from "../components/DisplayGrid.svelte";
   import Card from "../components/Card.svelte";
-  import { api } from "../shared/useApi";
+  import { api, img } from "../shared/useApi";
   import { onMount } from "svelte";
 
   let json = null;
@@ -56,7 +56,7 @@
   {#if json?.data}
     {#each json.data as pic (pic.id)}
       <Card
-        img={pic.attributes.url}
+        img={img(pic.attributes.url)}
         link={`/camper/${pic.relationships.camper?.data?.id}`} />
     {/each}
   {/if}

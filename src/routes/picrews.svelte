@@ -3,7 +3,7 @@
 
   import Card from "../components/Card.svelte";
   import DisplayGrid from "../components/DisplayGrid.svelte";
-  import { api } from "../shared/useApi.js";
+  import { api, img } from "../shared/useApi.js";
 
   let json = null;
   onMount(async () => {
@@ -20,7 +20,7 @@
     {#each json.data as picrew, index (picrew.id)}
       <Card
         link={`/picrew/${picrew.id}`}
-        img={json.included?.find((include) => include.id === picrew.relationships?.['display-pic']?.data?.id)?.attributes.url}
+        img={img(json.included?.find((include) => include.id === picrew.relationships?.['display-pic']?.data?.id)?.attributes.url)}
         label={picrew.attributes.name} />
     {/each}
   {/if}

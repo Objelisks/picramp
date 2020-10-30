@@ -6,7 +6,7 @@
   import { stores } from "@sapper/app";
   const { preloading, page, session } = stores();
 
-  import { api } from "../shared/useApi.js";
+  import { api, img } from "../shared/useApi.js";
   import { onMount } from "svelte";
 
   let json = null;
@@ -82,7 +82,7 @@
   {#if json?.included}
     {#each json.included as pic}
       <Card
-        img={pic.attributes.url}
+        img={img(pic.attributes.url)}
         highlight={json.data.relationships['display-pic']?.data?.id === pic.id}
         on:click={() => selectDisplayPic(pic)}>
         <button

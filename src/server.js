@@ -30,7 +30,7 @@ passport.use(
 );
 
 express()
-  .get("/auth/redirect", passport.authenticate("mastodon"))
+  .get("/picramp/auth/redirect", passport.authenticate("mastodon"))
   .use((req, res, next) => {
     if (dev) {
       // cheating
@@ -39,15 +39,16 @@ express()
     next();
   })
   .get(
-    "/login",
+    "/picramp/login",
     passport.authenticate("mastodon", {
       scope: "read:accounts",
       failureRedirect: "/",
     })
   )
-  .use("/upload", fileUpload)
-  .use("/rest", picrewApi)
+  .use("/picramp/upload", fileUpload)
+  .use("/picramp/rest", picrewApi)
   .use(
+    "/picramp",
     compression({ threshold: 0 }),
     sirv("static", { dev }),
     sapper.middleware({

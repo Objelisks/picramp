@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { api } from "../shared/useApi";
+  import { api, img } from "../shared/useApi";
   import Picross from "../components/Picross.svelte";
 
   let randomPic = null;
@@ -30,7 +30,7 @@
 
 {#if randomPic}
   <!-- <Picross url={'/images/230257_Ec2Adwcv.png'} {size} on:complete={finished} /> -->
-  <Picross url={randomPic.attributes.url} {size} on:complete={finished} />
+  <Picross url={img(randomPic.attributes.url)} {size} on:complete={finished} />
 {/if}
 
 size:
