@@ -31,8 +31,8 @@ passport.use(
           url: `${profile.url}`,
           created: new Date(),
         };
-        user = await picrewApi.create("camper", record);
-        console.log("user", user);
+        const created = await picrewApi.create("camper", record);
+        user = created.payload.records[0];
       }
       return cb(null, {
         id: user.id,
