@@ -17,7 +17,7 @@ passport.use(
   new MastodonStrategy(
     creds,
     async (accessToken, refreshToken, profile, cb) => {
-      const res = await picrewApi.find("camper", {
+      const res = await picrewApi.find("camper", undefined, {
         match: {
           name: profile.username,
         },
@@ -36,20 +36,18 @@ passport.use(
         const created = await picrewApi.create("camper", record);
         user = created.payload.records[0];
       }
-      return cb(null, {
-        id: user.id,
-        name: user.name,
-        url: user.url,
-      });
+      return cb(null, user);
     }
   )
 );
 
 passport.serializeUser((user, done) => {
+  console.log("serialize", user);
   done(null, user);
 });
 
 passport.deserializeUser((user, done) => {
+  console.log("deserialize", user);
   done(null, user);
 });
 
