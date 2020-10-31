@@ -22,7 +22,6 @@ passport.use(
           name: profile.username,
         },
       });
-      console.log(res);
       let user = null;
       if (res.count > 0) {
         user = res[0];
@@ -32,22 +31,24 @@ passport.use(
           url: profile.profileUrl,
           created: new Date(),
         };
-        console.log(record);
         const created = await picrewApi.create("camper", record);
         user = created.payload.records[0];
       }
+      console.log("user", user);
       return cb(null, user);
     }
   )
 );
 
 passport.serializeUser((user, done) => {
-  console.log("serialize", user);
-  done(null, user);
+  console.log("serialize", user.id);
+  done(null, user.id);
 });
 
-passport.deserializeUser((user, done) => {
-  console.log("deserialize", user);
+passport.deserializeUser(async (userId, done) => {
+  console.log("deserialize", userId);
+  const res = await picrewApi.find("camper", userId);
+  const user = res.payload.records[0];
   done(null, user);
 });
 
@@ -59,15 +60,14 @@ express()
     "/picramp/login",
     passport.authenticate("mastodon", {
       scope: "read:accounts",
-      failureRedirect: "/picramp",
     })
   )
   .get(
     "/picramp/login/redirect",
-    passport.authorize("mastodon", { failureRedirect: "/picramp" }),
-    (req, res) => {
-      res.redirect("/picramp");
-    }
+    passport.authenticate("mastodon", {
+      successRedirect: "/picramp",
+      failureRedirect: "/picramp",
+    })
   )
   .use("/picramp/upload", fileUpload)
   .use("/picramp/rest", store)
@@ -83,10 +83,10 @@ express()
           "account",
           req.account,
           "passport",
-          passport.isAuthenticated
+          req.passport
         );
         return {
-          camper: req.account,
+          camper: req.user,
         };
       },
     })
