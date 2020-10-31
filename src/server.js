@@ -34,19 +34,16 @@ passport.use(
         const created = await picrewApi.create("camper", record);
         user = created.payload.records[0];
       }
-      console.log("user", user);
       return cb(null, user);
     }
   )
 );
 
 passport.serializeUser((user, done) => {
-  console.log("serialize", user.id);
   done(null, user.id);
 });
 
 passport.deserializeUser(async (userId, done) => {
-  console.log("deserialize", userId);
   const res = await picrewApi.find("camper", userId);
   const user = res.payload.records[0];
   done(null, user);
@@ -77,15 +74,8 @@ express()
     sirv("static", { dev }),
     sapper.middleware({
       session: (req, res) => {
-        console.log(
-          "user",
-          req.user,
-          "account",
-          req.account,
-          "passport",
-          req.passport
-        );
         return {
+          authenticated: !!req.user,
           camper: req.user,
         };
       },

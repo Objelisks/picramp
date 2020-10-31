@@ -1,6 +1,6 @@
 <script>
   export let segment;
-  let loggedIn = false;
+  const { session } = stores();
 </script>
 
 <style>
@@ -85,8 +85,11 @@
         aria-current={segment === 'settings' ? 'page' : undefined}
         href="settings">settings</a>
     </li>
+    {#if $session.authenticated}
+      <li>{$session.camper.name}</li>
+    {/if}
     <li class:login={true}>
-      {#if loggedIn}
+      {#if $session.authenticated}
         <a href="/picramp/logout">logout</a>
       {:else}<a href="/picramp/login">login</a>{/if}
     </li>

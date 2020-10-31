@@ -4,7 +4,7 @@
   import DisplayGrid from "../components/DisplayGrid.svelte";
 
   import { stores } from "@sapper/app";
-  const { preloading, page, session } = stores();
+  const { session } = stores();
 
   import { api, img } from "../shared/useApi.js";
   import { onMount } from "svelte";
@@ -19,7 +19,7 @@
   const createPic = (pic) => {
     const formData = new FormData();
     formData.append("file", pic);
-    return fetch(`${window.location.origin}/upload`, {
+    return fetch(`${window.location.origin}/picramp/upload`, {
       method: "POST",
       body: formData,
     })
@@ -31,7 +31,7 @@
           {
             id: res,
             attributes: {
-              url: `/images/${pic.name}`,
+              url: `/picramp/images/${pic.name}`,
             },
           },
         ];
@@ -41,7 +41,7 @@
 
   const deletePic = (pic) => {
     // TODO: clean up old picrews when last pic deleted
-    return fetch(`${window.location.origin}/rest/pic/${pic.id}`, {
+    return fetch(`${window.location.origin}/picramp/rest/pic/${pic.id}`, {
       method: "DELETE",
     }).then(() => {
       // update locally
@@ -51,7 +51,7 @@
 
   const selectDisplayPic = (pic) => {
     return fetch(
-      `${window.location.origin}/rest/camper/${$session.camper.id}`,
+      `${window.location.origin}/picramp/rest/camper/${$session.camper.id}`,
       {
         method: "PATCH",
         headers: {
@@ -75,7 +75,7 @@
 </script>
 
 {#if json}
-  <p>logged in as: {json.data?.attributes.name}</p>
+  <p>logged in as: {$session.camper.name}</p>
 {/if}
 
 <DisplayGrid small>
