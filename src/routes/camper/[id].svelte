@@ -3,9 +3,9 @@
   import { stores } from "@sapper/app";
   const { page } = stores();
 
-  import Card from "../components/Card.svelte";
-  import DisplayGrid from "../components/DisplayGrid.svelte";
-  import { api, img } from "../shared/useApi.js";
+  import Card from "../../components/Card.svelte";
+  import DisplayGrid from "../../components/DisplayGrid.svelte";
+  import { api, img } from "../../shared/useApi.js";
 
   const id = page.params.id;
 

@@ -1,9 +1,9 @@
 <script>
   import { onMount } from "svelte";
 
-  import Card from "../../components/Card.svelte";
-  import DisplayGrid from "../../components/DisplayGrid.svelte";
-  import { api, img } from "../../shared/useApi.js";
+  import Card from "../components/Card.svelte";
+  import DisplayGrid from "../components/DisplayGrid.svelte";
+  import { api, img } from "../shared/useApi.js";
 
   let json = null;
   onMount(async () => {
