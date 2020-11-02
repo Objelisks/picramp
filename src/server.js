@@ -23,7 +23,7 @@ passport.use(
         },
       });
       let user = null;
-      if (res.count > 0) {
+      if (res.payload.count > 0) {
         user = res.payload.records[0];
       } else {
         const record = {
