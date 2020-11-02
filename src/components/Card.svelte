@@ -32,7 +32,7 @@
 
 <div class:card={true} class:highlight on:click>
   <a href={link}>
-    {#if img}<img alt={img} src={`${window.location.origin}${img}`} />{/if}
+    {#if img}<img alt={img} src={img} />{/if}
   </a>
   {#if label}{label}{/if}
   <slot />

@@ -57,7 +57,7 @@
     {#each json.data as pic (pic.id)}
       <Card
         img={img(pic.attributes.url)}
-        link={`/camper/${pic.relationships.camper?.data?.id}`} />
+        link={`/picramp/camper/${pic.relationships.camper?.data?.id}`} />
     {/each}
   {/if}
 </DisplayGrid>

@@ -38,7 +38,6 @@ app.post("/", async (req, res) => {
       if (err) return res.status(500).send(err);
 
       // TODO: turn this all into an IO hook in fortune
-      console.log(req.user);
       const userId = req.user?.id;
       if (!userId) return res.status(400).send("Not logged in.");
 

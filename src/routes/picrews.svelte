@@ -19,7 +19,7 @@
   {#if json?.data}
     {#each json.data as picrew, index (picrew.id)}
       <Card
-        link={`/picrew/${picrew.id}`}
+        link={`/picramp/picrew/${picrew.id}`}
         img={img(json.included?.find((include) => include.id === picrew.relationships?.['display-pic']?.data?.id)?.attributes.url)}
         label={picrew.attributes.name} />
     {/each}

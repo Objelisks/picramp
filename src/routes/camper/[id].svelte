@@ -1,31 +1,38 @@
-<script>
-  import { onMount } from "svelte";
-  import { stores } from "@sapper/app";
-  const { page } = stores();
+<script context="module">
+  export async function preload(page, session) {
+    const { id } = page.params;
 
-  import Card from "../../components/Card.svelte";
-  import DisplayGrid from "../../components/DisplayGrid.svelte";
-  import { api, img } from "../../shared/useApi.js";
-
-  const id = page.params.id;
-
-  let json = null;
-  onMount(async () => {
-    api(`/rest/camper/${id}/relationships/pic?sort=-created`).then(
-      (res) => (json = res)
-    );
-  });
+    return {
+      json: await this.fetch(
+        `/picramp/rest/campers/${id}?sort=-created&include=pics`
+      )
+        .then((res) => res.json())
+        .then((parsed) => {
+          if (parsed?.errors?.length > 0) {
+            throw parsed.errors[0];
+          }
+          return parsed;
+        }),
+    };
+  }
 </script>
 
-<h2>camper's pics</h2>
+<script>
+  import Card from "../../components/Card.svelte";
+  import DisplayGrid from "../../components/DisplayGrid.svelte";
+  import { img } from "../../shared/useApi.js";
+
+  export let json;
+</script>
+
+<h2>{json?.data?.attributes?.name}'s pics</h2>
 
 <DisplayGrid>
-  {#if json?.data}
-    {#each json.data as pic, index (pic.id)}
+  {#if json?.included}
+    {#each json.included as pic, index (pic.id)}
       <Card
         link={`/picramp/picrew/${pic.relationships.picrew?.data?.id}`}
-        img={img(pic.attributes.url)}
-        label={'go to picrew'} />
+        img={img(pic.attributes.url)} />
     {/each}
   {/if}
 </DisplayGrid>

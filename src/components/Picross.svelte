@@ -4,8 +4,6 @@
   import confetti from "canvas-confetti";
   import { onMount } from "svelte";
 
-  console.log(confetti);
-
   export let url;
   export let size;
 
@@ -112,7 +110,7 @@
         console.log("puzzle valid");
         puzzle = puzzleValid;
       } else {
-        console.log("invalid puzzle, retrying...");
+        console.log("invalid puzzle, mutating...");
         for (let i = 0; i < 5; i++) {
           fillRandom(ctx3);
         }

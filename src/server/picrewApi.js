@@ -46,14 +46,17 @@ const store = fortune(
   }
 );
 
-const listener = fortuneHTTP(store, {
+const apiListener = fortuneHTTP(store, {
+  serializers: [[jsonApiSerializer, { prefix: "/picramp/rest" }]],
+});
+
+const htmlListener = fortuneHTTP(store, {
   serializers: [
-    [jsonApiSerializer, { prefix: "/picramp/rest" }],
-    [htmlSerializer, { prefix: "/picramp/rest" }],
+    [htmlSerializer, { indexRoute: "/picramp/db", prefix: "/picramp/db" }],
     [formDataSerializer],
     [formUrlEncodedSerializer],
   ],
 });
-export default listener;
 
-export { store as picrewApi };
+export default apiListener;
+export { store as picrewApi, htmlListener };
