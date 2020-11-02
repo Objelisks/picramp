@@ -1,4 +1,4 @@
-import sirv from "sirv";
+import serve from "serve-static";
 import express from "express";
 import session from "express-session";
 import compression from "compression";
@@ -72,7 +72,7 @@ express()
   .use(
     "/picramp",
     compression({ threshold: 0 }),
-    sirv(path.join(__dirname, `../../../static/`), { dev }),
+    serve(path.join(__dirname, `../../../static/`)),
     sapper.middleware({
       session: (req, res) => {
         return {
