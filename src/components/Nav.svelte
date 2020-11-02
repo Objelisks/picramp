@@ -61,33 +61,33 @@
         aria-current={segment === undefined ? 'page' : undefined}
         href=".">home</a>
     </li>
-    <li>
-      <a
-        aria-current={segment === 'campers' ? 'page' : undefined}
-        href="campers">campers</a>
-    </li>
-    <li>
-      <a
-        aria-current={segment === 'picrews' ? 'page' : undefined}
-        href="picrews">picrews</a>
-    </li>
-    <li>
-      <a
-        aria-current={segment === 'guess' ? 'page' : undefined}
-        href="guess">guess</a>
-    </li>
-    <li>
-      <a
-        aria-current={segment === 'picrewss' ? 'page' : undefined}
-        href="picrewss">picrewss</a>
-    </li>
-    <li>
-      <a
-        aria-current={segment === 'settings' ? 'page' : undefined}
-        href="settings">settings</a>
-    </li>
     {#if $session.authenticated}
-      <li>{$session.camper.name}</li>
+      <li>
+        <a
+          aria-current={segment === 'campers' ? 'page' : undefined}
+          href="campers">campers</a>
+      </li>
+      <li>
+        <a
+          aria-current={segment === 'picrews' ? 'page' : undefined}
+          href="picrews">picrews</a>
+      </li>
+      <li>
+        <a
+          aria-current={segment === 'guess' ? 'page' : undefined}
+          href="guess">guess</a>
+      </li>
+      <li>
+        <a
+          aria-current={segment === 'picrewss' ? 'page' : undefined}
+          href="picrewss">picrewss</a>
+      </li>
+      <li>
+        <a
+          aria-current={segment === 'settings' ? 'page' : undefined}
+          href="settings">settings</a>
+      </li>
+      <li class:login={true}>{$session.camper.name}</li>
     {/if}
     <li class:login={true}>
       {#if $session.authenticated}

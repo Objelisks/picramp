@@ -1,27 +1,31 @@
 <script>
   import { onMount } from "svelte";
+  import { stores } from "@sapper/app";
+  const { page } = stores();
 
   import Card from "../components/Card.svelte";
   import DisplayGrid from "../components/DisplayGrid.svelte";
   import { api, img } from "../shared/useApi.js";
 
+  const id = page.params.id;
+
   let json = null;
   onMount(async () => {
-    api("/rest/campers?include=displayPic&sort=-created").then(
+    api(`/rest/camper/${id}/relationships/pic?sort=-created`).then(
       (res) => (json = res)
     );
   });
 </script>
 
-<h2>all of the campers</h2>
+<h2>camper's pics</h2>
 
 <DisplayGrid>
   {#if json?.data}
-    {#each json.data as camper, index (camper.id)}
+    {#each json.data as pic, index (pic.id)}
       <Card
-        link={`/picramp/camper/${camper.id}`}
-        img={img(json.included?.find((include) => include.id === camper.relationships?.['display-pic']?.data?.id)?.attributes.url)}
-        label={camper.attributes.name} />
+        link={`/picramp/picrew/${pic.relationships.picrew?.data?.id}`}
+        img={img(pic.attributes.url)}
+        label={'go to picrew'} />
     {/each}
   {/if}
 </DisplayGrid>
