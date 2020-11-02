@@ -71,7 +71,7 @@ express()
   .use(
     "/picramp",
     compression({ threshold: 0 }),
-    sirv("static", { dev }),
+    sirv(path.join(__dirname, `../../static/`), { dev }),
     sapper.middleware({
       session: (req, res) => {
         return {
