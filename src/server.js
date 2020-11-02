@@ -24,7 +24,7 @@ passport.use(
       });
       let user = null;
       if (res.count > 0) {
-        user = res[0];
+        user = res.payload.records[0];
       } else {
         const record = {
           name: profile.username,

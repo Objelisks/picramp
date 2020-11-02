@@ -31,7 +31,7 @@
           {
             id: res,
             attributes: {
-              url: `/picramp/images/${pic.name}`,
+              url: `/images/${pic.name}`,
             },
           },
         ];
