@@ -5,6 +5,7 @@ import compression from "compression";
 import * as sapper from "@sapper/server";
 import passport from "passport";
 import MastodonStrategy from "passport-mastodon";
+import path from "path";
 
 import creds from "./creds.json";
 import store, { picrewApi } from "./server/picrewApi.js";
