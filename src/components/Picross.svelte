@@ -10,6 +10,7 @@
   let palette;
   let puzzle;
   let solved = false;
+  let paintMode = 1;
 
   let image;
   let canvas;
@@ -123,7 +124,7 @@
     solved = puzzle.checkUserSolution();
   };
 
-  const getCell = (row, col) => {
+  const getCell = (puzzle, row, col) => {
     return puzzle.cells[col * size + row];
   };
 
@@ -138,10 +139,33 @@
     return Math.random() * (max - min) + min;
   };
 
+  const getCellStyle = (cell) => {
+    if (solved) {
+      return `background-color:${rgb(
+        trueColors.getImageData(cell.column, cell.row, 1, 1).data
+      )}`;
+    }
+    switch (cell.userSolution) {
+      case 1: {
+        return `background-color:${rgb(palette[1])}`;
+      }
+      default:
+      case 0:
+      case null: {
+        return `background-color:${rgb(palette[0])}`;
+      }
+    }
+  };
+
+  const applyStyles = () => {
+    puzzle.cells.forEach((cell) => (cell.style = getCellStyle(cell)));
+  };
+
   $: {
     [puzzle];
     if (puzzle) {
       checkSolution();
+      applyStyles();
     }
   }
 
@@ -186,6 +210,9 @@
     height: 2em;
     box-sizing: border-box;
     border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .hint {
     box-sizing: border-box;
@@ -204,6 +231,15 @@
     padding-bottom: 0.5em;
   }
 </style>
+
+<svg xmlns="http://www.w3.org/2000/svg" dispaly="none">
+  <symbol width="24" height="24" id="cross" viewBox="0 0 32 32">
+    <g>
+      <line x1="0" y1="0" x2="32" y2="32" stroke-width="3px" />
+      <line x1="0" y1="32" x2="32" y2="0" stroke-width="3px" />
+    </g>
+  </symbol>
+</svg>
 
 {#if puzzle}
   <div
@@ -229,27 +265,46 @@
         <div
           class="cell"
           on:mousedown={(e) => {
-            const cell = getCell(rowIndex, colIndex);
+            const cell = getCell(puzzle, rowIndex, colIndex);
             if (e.buttons === 1) {
               cell.userSolution = cell.userSolution ? 0 : 1;
+              paintMode = cell.userSolution;
               puzzle = puzzle;
             } else if (e.buttons === 2) {
-              cell.userSolution = 0;
+              if (cell.userSolution !== null) {
+                cell.userSolution = null;
+                paintMode = null;
+              } else {
+                cell.userSolution = 0;
+                paintMode = 0;
+              }
               puzzle = puzzle;
             }
+          }}
+          on:mouseup={(e) => {
+            paintMode = 1;
           }}
           on:mouseenter={(e) => {
-            const cell = getCell(rowIndex, colIndex);
+            const cell = getCell(puzzle, rowIndex, colIndex);
             if (e.buttons === 1) {
-              cell.userSolution = 1;
+              cell.userSolution = paintMode;
               puzzle = puzzle;
             } else if (e.buttons === 2) {
-              cell.userSolution = 0;
+              if (paintMode === 0) {
+                cell.userSolution = cell.userSolution === 1 ? 1 : 0;
+              } else {
+                cell.userSolution = paintMode;
+              }
+
               puzzle = puzzle;
             }
           }}
-          style="background-color:{solved ? rgb(trueColors.getImageData(rowIndex, colIndex, 1, 1).data) : puzzle.cells[colIndex * size + rowIndex].userSolution ? rgb(palette[1]) : rgb(palette[0])}" />
-        <!-- needs that direct access to puzzle to trigger refresh -->
+          style={getCell(puzzle, rowIndex, colIndex).style}>
+          {#if !solved && getCell(puzzle, rowIndex, colIndex).userSolution === 0}
+            <svg width="24" height="24" stroke={rgb(palette[1])}><use
+                xlink:href="#cross" /></svg>
+          {/if}
+        </div>
       {/each}
     {/each}
   </div>
@@ -261,7 +316,7 @@
 
 <button
   on:click={() => {
-    puzzle.cells.forEach((cell) => (cell.userSolution = 0));
+    puzzle.cells.forEach((cell) => (cell.userSolution = null));
     puzzle = puzzle;
   }}>reset</button>
 

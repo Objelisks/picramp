@@ -8,7 +8,6 @@
   const onChange = (e) => {
     const file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
     fileName = file ? file.name : "";
-    console.log(file);
     createAction(file).then(() => {
       fileName = "";
     });

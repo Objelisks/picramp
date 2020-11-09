@@ -10,6 +10,13 @@ recreating user on login
 settings page does picramp/picramp
 
 
+segment serve?
+hide api behind auth
+document features
+X paginate searches
+make picrewss finding better
+X on right click
+display camper name on picrewss
 
 
   {

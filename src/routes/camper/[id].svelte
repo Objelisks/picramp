@@ -1,10 +1,11 @@
 <script context="module">
+  import { PAGE_LIMIT } from "../../constants.js";
   export async function preload(page, session) {
     const { id } = page.params;
 
     return {
       json: await this.fetch(
-        `/picramp/rest/campers/${id}?sort=-created&include=pics`
+        `/picramp/rest/campers/${id}?sort=-created&include=pics&page[limit]=${PAGE_LIMIT}`
       )
         .then((res) => res.json())
         .then((parsed) => {
@@ -19,6 +20,7 @@
 
 <script>
   import Card from "../../components/Card.svelte";
+  import Pager from "../../components/Pager.svelte";
   import DisplayGrid from "../../components/DisplayGrid.svelte";
   import { img } from "../../shared/useApi.js";
 
@@ -36,3 +38,5 @@
     {/each}
   {/if}
 </DisplayGrid>
+
+<Pager links={json?.links} />

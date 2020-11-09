@@ -1,13 +1,33 @@
-<script>
-  import DisplayGrid from "../components/DisplayGrid.svelte";
-  import Card from "../components/Card.svelte";
-  import { api, img } from "../shared/useApi";
-  import { onMount } from "svelte";
+<script context="module">
+  import { PAGE_LIMIT } from "../constants.js";
+  export async function preload(page, session) {
+    const { query } = page;
+    const offset = query?.page?.offset || query?.["page[offset]"];
 
-  let json = null;
-  onMount(async () => {
-    api("/rest/pics?sort=-created").then((res) => (json = res));
-  });
+    return {
+      json: await this.fetch(
+        `/picramp/rest/pics?sort=-created&page[limit]=${PAGE_LIMIT}${
+          offset && `&page[offset]=${offset}`
+        }`
+      )
+        .then((res) => res.json())
+        .then((parsed) => {
+          if (parsed?.errors?.length > 0) {
+            throw parsed.errors[0];
+          }
+          return parsed;
+        }),
+    };
+  }
+</script>
+
+<script>
+  import Card from "../components/Card.svelte";
+  import Pager from "../components/Pager.svelte";
+  import DisplayGrid from "../components/DisplayGrid.svelte";
+  import { img } from "../shared/useApi.js";
+
+  export let json;
 </script>
 
 <style>
@@ -61,3 +81,5 @@
     {/each}
   {/if}
 </DisplayGrid>
+
+<Pager links={json?.links} />
