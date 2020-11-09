@@ -5,6 +5,7 @@
 
   let randomPic = null;
   let size = 10;
+  let name;
 
   onMount(async () => {
     restart();
@@ -19,6 +20,7 @@
         `/rest/pics?page[offset]=${randomPage}&page[limit]=1&include=camper`
       ).then((res) => {
         randomPic = res.data?.[0];
+        name = res.included?.[0].attributes.name;
       });
     });
   };
@@ -29,8 +31,11 @@
 <h2>picrew picross (picrewss)</h2>
 
 {#if randomPic}
-  <!-- <Picross url={'/images/230257_Ec2Adwcv.png'} {size} on:complete={finished} /> -->
-  <Picross url={img(randomPic.attributes.url)} {size} on:complete={finished} />
+  <Picross
+    url={img(randomPic.attributes.url)}
+    {name}
+    {size}
+    on:complete={finished} />
 {/if}
 
 size:

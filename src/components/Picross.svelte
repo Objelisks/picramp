@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
 
   export let url;
+  export let name;
   export let size;
 
   let palette;
@@ -232,7 +233,7 @@
   }
 </style>
 
-<svg xmlns="http://www.w3.org/2000/svg" dispaly="none">
+<svg xmlns="http://www.w3.org/2000/svg" display="none">
   <symbol width="24" height="24" id="cross" viewBox="0 0 32 32">
     <g>
       <line x1="0" y1="0" x2="32" y2="32" stroke-width="3px" />
@@ -260,7 +261,6 @@
           <span class="hintvalue horz">{hintValue}</span>
         {/each}
       </div>
-      <!-- TODO fix drawing -->
       {#each col as _cell, rowIndex}
         <div
           class="cell"
@@ -310,7 +310,10 @@
   </div>
 {/if}
 
-{#if solved}<img src={url} alt="the solution" width={size * 32} />{/if}
+{#if solved}
+  <p>it's {name}!</p>
+  <img src={url} alt="the solution" width={size * 32} />
+{/if}
 
 <br />
 
