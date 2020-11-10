@@ -68,8 +68,39 @@ express()
   .use(session({ secret: "fgsfds" }))
   .use(passport.initialize())
   .use(passport.session())
+  // .get(
+  //   "/picramp/login",
+  //   (() => {
+  //     return dev
+  //       ? passport.authenticate("localhost", {
+  //           failureRedirect: "/picramp",
+  //         })
+  //       : passport.authenticate("mastodon", {
+  //           scope: "read:accounts",
+  //         });
+  //   })(),
+  //   (req, res) => {
+  //     res.redirect("/picramp");
+  //   }
+  // )
   .get(
-    "/picramp/login",
+    "/picramp/login/redirect",
+    passport.authenticate("mastodon", {
+      successRedirect: "/picramp",
+      failureRedirect: "/picramp",
+    })
+  )
+  .get("/picramp/logout", (req, res, next) => {
+    req.session.destroy(() => {
+      req.logout();
+      res.redirect("/picramp");
+    });
+  })
+  .use("/picramp/upload", fileUpload)
+  .use("/picramp/rest", store)
+  .use("/picramp/db", dev ? htmlListener : (_, __, next) => next())
+  .use(
+    "/picramp",
     (() => {
       return dev
         ? passport.authenticate("localhost", {
@@ -79,26 +110,6 @@ express()
             scope: "read:accounts",
           });
     })(),
-    (req, res) => {
-      res.redirect("/picramp");
-    }
-  )
-  .get(
-    "/picramp/login/redirect",
-    passport.authenticate("mastodon", {
-      successRedirect: "/picramp",
-      failureRedirect: "/picramp",
-    })
-  )
-  .get("/picramp/logout", (req, res, next) => {
-    req.logout();
-    res.redirect("/picramp");
-  })
-  .use("/picramp/upload", fileUpload)
-  .use("/picramp/rest", store)
-  .use("/picramp/db", dev ? htmlListener : (_, __, next) => next())
-  .use(
-    "/picramp",
     compression({ threshold: 0 }),
     serve(path.join(__dirname, `../../../static/`)),
     sapper.middleware({

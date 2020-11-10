@@ -1,13 +1,4 @@
-fileUpload needs to know who the session user is
-server needs a session cookie
-session needs oauth from mastodon
-need to be able to mock out oauth for dev
-
-
-
-problems:
-recreating user on login
-settings page does picramp/picramp
+X need to be able to mock out oauth for dev
 
 
 segment serve?
@@ -16,7 +7,7 @@ document features
 X paginate searches
 make picrewss finding better
 X X on right click
-display camper name on picrewss
+X display camper name on picrewss
 
 
   {
