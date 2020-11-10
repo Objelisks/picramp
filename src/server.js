@@ -14,6 +14,7 @@ import fileUpload from "./server/fileUpload.js";
 
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === "development";
+let loggedout = true;
 
 const findOrCreateUser = async (name, url) => {
   const res = await picrewApi.find("camper", undefined, {
@@ -40,6 +41,10 @@ passport.use(
   "localhost",
   new CustomStrategy(async (req, done) => {
     const user = await findOrCreateUser("objelisks", "fgsfds");
+    if (dev && loggedout) {
+      loggedout = !loggedout;
+      throw new Error("no user");
+    }
     return done(null, user);
   })
 );
@@ -87,14 +92,17 @@ express()
     "/picramp/login/redirect",
     passport.authenticate("mastodon", {
       successRedirect: "/picramp",
-      failureRedirect: "/picramp",
+      failureRedirect: "/picramp/login",
     })
   )
   .get("/picramp/logout", (req, res, next) => {
     req.session.destroy(() => {
       req.logout();
-      res.redirect("/picramp");
+      res.redirect("/picramp/login");
     });
+  })
+  .get("/picramp/login", (req, res, next) => {
+    res.sendFile(path.join(__dirname, "../../../static/login.html"));
   })
   .use("/picramp/upload", fileUpload)
   .use("/picramp/rest", store)
@@ -104,7 +112,7 @@ express()
     (() => {
       return dev
         ? passport.authenticate("localhost", {
-            failureRedirect: "/picramp",
+            failureRedirect: "/picramp/login",
           })
         : passport.authenticate("mastodon", {
             scope: "read:accounts",
