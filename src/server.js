@@ -16,34 +16,58 @@ const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === "development";
 let loggedout = true;
 
-const findOrCreateUser = async (name, url) => {
-  const res = await picrewApi.find("camper", undefined, {
+const findOrCreateUser = async (name, url, token) => {
+  // try to find by token
+  const res = await picrewApi.find("camper", null, {
     match: {
-      name: name,
+      token,
     },
   });
-  let user = null;
-  if (res.payload.count > 0) {
-    user = res.payload.records[0];
-  } else {
+  let user = res.payload?.records?.[0] ?? null;
+
+  // try to find by name
+  if (!user) {
+    const res = await picrewApi.find("camper", null, {
+      match: {
+        name,
+      },
+    });
+    user = res.payload?.records?.[0] ?? null;
+
+    // update token
+    if (user) {
+      await picrewApi.update("camper", [
+        {
+          id: user.id,
+          replace: {
+            token,
+          },
+        },
+      ]);
+    }
+  }
+
+  if (!user) {
     const record = {
       name: name,
       url: url,
       created: new Date(),
+      token,
     };
     const created = await picrewApi.create("camper", record);
     user = created.payload.records[0];
   }
+
   return user;
 };
 
 passport.use(
   "localhost",
   new CustomStrategy(async (req, done) => {
-    const user = await findOrCreateUser("objelisks", "fgsfds");
+    const user = await findOrCreateUser("objelisks", "fgsfds", "token1");
     if (dev && loggedout) {
       loggedout = !loggedout;
-      throw new Error("no user");
+      return done(null, false);
     }
     return done(null, user);
   })
@@ -52,9 +76,13 @@ passport.use(
 passport.use(
   new MastodonStrategy(
     creds,
-    async (accessToken, refreshToken, profile, cb) => {
-      const user = await findOrCreateUser(profile.username, profile.profileUrl);
-      return cb(null, user);
+    async (accessToken, refreshToken, profile, done) => {
+      const user = await findOrCreateUser(
+        profile.username,
+        profile.profileUrl,
+        accessToken
+      );
+      return done(null, user);
     }
   )
 );
@@ -69,56 +97,43 @@ passport.deserializeUser(async (userId, done) => {
   done(null, user);
 });
 
+const authenticate = () =>
+  dev
+    ? passport.authenticate("localhost", {
+        failureRedirect: "/picramp/landing",
+      })
+    : passport.authenticate("mastodon", {
+        scope: "read:accounts",
+        failureRedirect: "/picramp/landing",
+      });
+
 express()
   .use(session({ secret: "fgsfds" }))
   .use(passport.initialize())
   .use(passport.session())
-  // .get(
-  //   "/picramp/login",
-  //   (() => {
-  //     return dev
-  //       ? passport.authenticate("localhost", {
-  //           failureRedirect: "/picramp",
-  //         })
-  //       : passport.authenticate("mastodon", {
-  //           scope: "read:accounts",
-  //         });
-  //   })(),
-  //   (req, res) => {
-  //     res.redirect("/picramp");
-  //   }
-  // )
   .get(
     "/picramp/login/redirect",
     passport.authenticate("mastodon", {
       successRedirect: "/picramp",
-      failureRedirect: "/picramp/login",
+      failureRedirect: "/picramp/landing",
     })
   )
   .get("/picramp/logout", (req, res, next) => {
+    loggedout = true;
     req.session.destroy(() => {
       req.logout();
-      res.redirect("/picramp/login");
+      res.redirect("/picramp/landing");
     });
   })
-  .get("/picramp/login", (req, res, next) => {
-    res.sendFile(path.join(__dirname, "../../../static/login.html"));
+  .get("/picramp/landing", (req, res, next) => {
+    res.sendFile(path.join(__dirname, "../../../static/landing.html"));
   })
-  .use("/picramp/upload", fileUpload)
-  .use("/picramp/rest", store)
+  .use("/picramp/upload", authenticate(), fileUpload)
+  .use("/picramp/rest", authenticate(), store)
   .use("/picramp/db", dev ? htmlListener : (_, __, next) => next())
   .use(
     "/picramp",
-    (() => {
-      return dev
-        ? passport.authenticate("localhost", {
-            failureRedirect: "/picramp/login",
-          })
-        : passport.authenticate("mastodon", {
-            scope: "read:accounts",
-            failureRedirect: "/picramp/login",
-          });
-    })(),
+    authenticate(),
     compression({ threshold: 0 }),
     serve(path.join(__dirname, `../../../static/`)),
     sapper.middleware({

@@ -18,6 +18,7 @@ const store = fortune(
       displayPic: "pic",
       url: String,
       created: Date,
+      token: String,
 
       pics: [Array("pic"), "camper"],
     },
