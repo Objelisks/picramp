@@ -116,6 +116,7 @@ express()
           })
         : passport.authenticate("mastodon", {
             scope: "read:accounts",
+            failureRedirect: "/picramp/login",
           });
     })(),
     compression({ threshold: 0 }),
