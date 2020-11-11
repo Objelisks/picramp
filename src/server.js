@@ -123,6 +123,7 @@ express()
       cookie: { maxAge: 86400000 },
       store: new MemoryStore({ checkPeriod: 86400000 }),
       resave: false,
+      saveUninitialized: false,
       secret: "fgsfds",
     })
   )
