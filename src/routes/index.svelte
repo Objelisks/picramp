@@ -1,6 +1,8 @@
 <script context="module">
   import { PAGE_LIMIT } from "../constants.js";
   export async function preload(page, session) {
+    if (!session.authenticated) return;
+
     const { query } = page;
     const offset = query?.page?.offset || query?.["page[offset]"];
 
@@ -25,6 +27,7 @@
   import Card from "../components/Card.svelte";
   import Pager from "../components/Pager.svelte";
   import DisplayGrid from "../components/DisplayGrid.svelte";
+  import Authenticated from "../components/Authenticated.svelte";
   import { img } from "../shared/useApi.js";
 
   export let json;
@@ -72,14 +75,16 @@
 
 <br />
 
-<DisplayGrid>
-  {#if json?.data}
-    {#each json.data as pic (pic.id)}
-      <Card
-        img={img(pic.attributes.url)}
-        link={`/picramp/camper/${pic.relationships.camper?.data?.id}`} />
-    {/each}
-  {/if}
-</DisplayGrid>
+<Authenticated>
+  <DisplayGrid>
+    {#if json?.data}
+      {#each json.data as pic (pic.id)}
+        <Card
+          img={img(pic.attributes.url)}
+          link={`/picramp/camper/${pic.relationships.camper?.data?.id}`} />
+      {/each}
+    {/if}
+  </DisplayGrid>
 
-<Pager links={json?.links} />
+  <Pager links={json?.links} />
+</Authenticated>

@@ -1,7 +1,11 @@
 <script>
   import { api, img } from "../shared/useApi";
   import Card from "../components/Card.svelte";
+  import Authenticated from "../components/Authenticated.svelte";
   import { onMount } from "svelte";
+
+  import { stores } from "@sapper/app";
+  const { session } = stores();
 
   let randomPic = null;
   let actualCamper = null;
@@ -33,6 +37,7 @@
   };
 
   onMount(async () => {
+    if (!$session.authenticated) return;
     restart();
   });
 
@@ -72,22 +77,24 @@
   }
 </style>
 
-<h2>guess the camper!</h2>
+<Authenticated>
+  <h2>guess the camper!</h2>
 
-{#if randomPic && guessableCampers}
-  <Card img={img(randomPic.attributes.url)} />
-  <p>who is it??</p>
-  <span class:points={true}>points: {points}</span>
-  <ul>
-    {#if correct === null}
-      {#each guessableCampers.sort(randomly) as camper}
-        <li on:click={() => checkCorrectness(camper.attributes.name)}>
-          {camper.attributes.name}
-        </li>
-      {/each}
-    {:else}
-      {correct ? 'you got it!' : "that's not it bud"}
-      <button on:click={restart}>next</button>
-    {/if}
-  </ul>
-{/if}
+  {#if randomPic && guessableCampers}
+    <Card img={img(randomPic.attributes.url)} />
+    <p>who is it??</p>
+    <span class:points={true}>points: {points}</span>
+    <ul>
+      {#if correct === null}
+        {#each guessableCampers.sort(randomly) as camper}
+          <li on:click={() => checkCorrectness(camper.attributes.name)}>
+            {camper.attributes.name}
+          </li>
+        {/each}
+      {:else}
+        {correct ? 'you got it!' : "that's not it bud"}
+        <button on:click={restart}>next</button>
+      {/if}
+    </ul>
+  {/if}
+</Authenticated>

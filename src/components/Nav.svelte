@@ -56,22 +56,22 @@
 
 <nav>
   <ul>
-    <li>
-      <a
-        aria-current={segment === undefined ? 'page' : undefined}
-        href=".">home</a>
-    </li>
-    <li>
-      <a
-        aria-current={segment === 'campers' ? 'page' : undefined}
-        href="campers">campers</a>
-    </li>
-    <li>
-      <a
-        aria-current={segment === 'picrews' ? 'page' : undefined}
-        href="picrews">picrews</a>
-    </li>
     {#if $session.authenticated}
+      <li>
+        <a
+          aria-current={segment === undefined ? 'page' : undefined}
+          href=".">home</a>
+      </li>
+      <li>
+        <a
+          aria-current={segment === 'campers' ? 'page' : undefined}
+          href="campers">campers</a>
+      </li>
+      <li>
+        <a
+          aria-current={segment === 'picrews' ? 'page' : undefined}
+          href="picrews">picrews</a>
+      </li>
       <li>
         <a
           aria-current={segment === 'guess' ? 'page' : undefined}

@@ -97,43 +97,51 @@ passport.deserializeUser(async (userId, done) => {
   done(null, user);
 });
 
+const lockedApi = (req, res, next) => {
+  if (req.user) {
+    return next();
+  }
+  res.status(401).send("Not authorized");
+};
+
 const authenticate = ({ dev }) =>
   dev
     ? passport.authenticate("localhost", {
-        failureRedirect: "/picramp/landing",
+        failureRedirect: "/picramp",
       })
     : passport.authenticate("mastodon", {
         scope: "read:accounts",
-        failureRedirect: "/picramp/landing",
+        failureRedirect: "/picramp",
       });
 
 express()
   .use(session({ secret: "fgsfds" }))
   .use(passport.initialize())
   .use(passport.session())
+  .get("/picramp/login", authenticate({ dev }), (req, res) =>
+    res.redirect("/picramp")
+  )
   .get(
     "/picramp/login/redirect",
     passport.authenticate("mastodon", {
-      successRedirect: "/picramp",
-      failureRedirect: "/picramp/landing",
-    })
+      failureRedirect: "/picramp",
+    }),
+    (req, res) => {
+      res.redirect("/picramp");
+    }
   )
   .get("/picramp/logout", (req, res, next) => {
     loggedout = true;
     req.session.destroy(() => {
       req.logout();
-      res.redirect("/picramp/landing");
+      res.redirect("/picramp");
     });
   })
-  .get("/picramp/landing", (req, res, next) => {
-    res.sendFile(path.join(__dirname, "../../../static/landing.html"));
-  })
-  .use("/picramp/upload", authenticate({ dev }), fileUpload)
-  .use("/picramp/rest", authenticate({ dev }), store)
+  .use("/picramp/upload", lockedApi, fileUpload)
+  .use("/picramp/rest", lockedApi, store)
   .use("/picramp/db", dev ? htmlListener : (_, __, next) => next())
   .use(
     "/picramp",
-    authenticate({ dev }),
     compression({ threshold: 0 }),
     serve(path.join(__dirname, `../../../static/`)),
     sapper.middleware({

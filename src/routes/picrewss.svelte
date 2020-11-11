@@ -2,12 +2,17 @@
   import { onMount } from "svelte";
   import { api, img } from "../shared/useApi";
   import Picross from "../components/Picross.svelte";
+  import Authenticated from "../components/Authenticated.svelte";
+
+  import { stores } from "@sapper/app";
+  const { session } = stores();
 
   let randomPic = null;
   let size = 10;
   let name;
 
   onMount(async () => {
+    if (!$session.authenticated) return;
     restart();
   });
 
@@ -28,25 +33,27 @@
   const finished = () => {};
 </script>
 
-<h2>picrew picross (picrewss)</h2>
+<Authenticated>
+  <h2>picrew picross (picrewss)</h2>
 
-{#if randomPic}
-  <Picross
-    url={img(randomPic.attributes.url)}
-    {name}
-    {size}
-    on:complete={finished} />
-{/if}
+  {#if randomPic}
+    <Picross
+      url={img(randomPic.attributes.url)}
+      {name}
+      {size}
+      on:complete={finished} />
+  {/if}
 
-size:
-<select bind:value={size}>
-  <option>{5}</option>
-  <option>{10}</option>
-  <option>{15}</option>
-  <option>{20}</option>
-</select>
+  size:
+  <select bind:value={size}>
+    <option>{5}</option>
+    <option>{10}</option>
+    <option>{15}</option>
+    <option>{20}</option>
+  </select>
 
-<button
-  on:click={() => {
-    restart();
-  }}>gimme new one</button>
+  <button
+    on:click={() => {
+      restart();
+    }}>gimme new one</button>
+</Authenticated>

@@ -2,6 +2,7 @@
   import Card from "../components/Card.svelte";
   import Create from "../components/Create.svelte";
   import DisplayGrid from "../components/DisplayGrid.svelte";
+  import Authenticated from "../components/Authenticated.svelte";
 
   import { stores } from "@sapper/app";
   const { session } = stores();
@@ -11,6 +12,7 @@
 
   let json = null;
   onMount(async () => {
+    if (!$session.authenticated) return;
     api(`/rest/camper/${$session.camper.id}?include=pics`).then(
       (result) => (json = result)
     );
@@ -74,24 +76,26 @@
   };
 </script>
 
-{#if json}
-  <p>logged in as: {$session.camper.name}</p>
-{/if}
-
-<DisplayGrid small>
-  {#if json?.included}
-    {#each json.included as pic}
-      <Card
-        img={img(pic.attributes.url)}
-        highlight={json.data.relationships['display-pic']?.data?.id === pic.id}
-        on:click={() => selectDisplayPic(pic)}>
-        <button
-          on:click={(e) => {
-            e.stopPropagation();
-            deletePic(pic);
-          }}>del</button>
-      </Card>
-    {/each}
+<Authenticated>
+  {#if json}
+    <p>logged in as: {$session.camper.name}</p>
   {/if}
-  <Create createAction={(pic) => createPic(pic)} />
-</DisplayGrid>
+
+  <DisplayGrid small>
+    {#if json?.included}
+      {#each json.included as pic}
+        <Card
+          img={img(pic.attributes.url)}
+          highlight={json.data.relationships['display-pic']?.data?.id === pic.id}
+          on:click={() => selectDisplayPic(pic)}>
+          <button
+            on:click={(e) => {
+              e.stopPropagation();
+              deletePic(pic);
+            }}>del</button>
+        </Card>
+      {/each}
+    {/if}
+    <Create createAction={(pic) => createPic(pic)} />
+  </DisplayGrid>
+</Authenticated>
