@@ -2,11 +2,17 @@
   import { PAGE_LIMIT } from "../../constants.js";
   export async function preload(page, session) {
     if (!session.authenticated) return;
-    const { id } = page.params;
+    const {
+      params: { id },
+      query,
+    } = page;
+    const offset = query?.page?.offset || query?.["page[offset]"];
 
     return {
       json: await this.fetch(
-        `/picramp/rest/campers/${id}?sort=-created&include=pics&page[limit]=${PAGE_LIMIT}`
+        `/picramp/rest/campers/${id}?sort=-created&include=pics&page[limit]=${PAGE_LIMIT}${
+          (offset && `&page[offset]=${offset}`) ?? ""
+        }`
       )
         .then((res) => res.json())
         .then((parsed) => {

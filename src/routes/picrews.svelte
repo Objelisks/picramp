@@ -9,7 +9,7 @@
     return {
       json: await this.fetch(
         `/picramp/rest/picrews?include=displayPic&sort=-created&page[limit]=${PAGE_LIMIT}${
-          offset && `&page[offset]=${offset}`
+          (offset && `&page[offset]=${offset}`) ?? ""
         }`
       )
         .then((res) => res.json())
