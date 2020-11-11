@@ -66,7 +66,7 @@ passport.use(
   new CustomStrategy(async (req, done) => {
     const user = await findOrCreateUser("objelisks", "fgsfds", "token1");
     if (dev && loggedout) {
-      loggedout = !loggedout;
+      loggedout = false;
       return done(null, false);
     }
     return done(null, user);
@@ -93,11 +93,11 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (userId, done) => {
   const res = await picrewApi.find("camper", userId);
-  const user = res.payload.records[0];
+  const user = res.payload?.records?.[0];
   done(null, user);
 });
 
-const authenticate = () =>
+const authenticate = ({ dev }) =>
   dev
     ? passport.authenticate("localhost", {
         failureRedirect: "/picramp/landing",
@@ -133,7 +133,7 @@ express()
   .use("/picramp/db", dev ? htmlListener : (_, __, next) => next())
   .use(
     "/picramp",
-    authenticate(),
+    authenticate({ dev }),
     compression({ threshold: 0 }),
     serve(path.join(__dirname, `../../../static/`)),
     sapper.middleware({
