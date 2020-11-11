@@ -128,8 +128,8 @@ express()
   .get("/picramp/landing", (req, res, next) => {
     res.sendFile(path.join(__dirname, "../../../static/landing.html"));
   })
-  .use("/picramp/upload", authenticate(), fileUpload)
-  .use("/picramp/rest", authenticate(), store)
+  .use("/picramp/upload", authenticate({ dev }), fileUpload)
+  .use("/picramp/rest", authenticate({ dev }), store)
   .use("/picramp/db", dev ? htmlListener : (_, __, next) => next())
   .use(
     "/picramp",
