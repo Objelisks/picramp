@@ -1,6 +1,7 @@
 import serve from "serve-static";
 import express from "express";
 import session from "express-session";
+import makeMemoryStore from "memorystore";
 import compression from "compression";
 import * as sapper from "@sapper/server";
 import passport from "passport";
@@ -15,6 +16,8 @@ import fileUpload from "./server/fileUpload.js";
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === "development";
 let loggedout = true;
+
+const MemoryStore = makeMemoryStore(session);
 
 const findOrCreateUser = async (name, url, token) => {
   // try to find by token
@@ -115,7 +118,14 @@ const authenticate = ({ dev }) =>
       });
 
 express()
-  .use(session({ secret: "fgsfds" }))
+  .use(
+    session({
+      cookie: { maxAge: 86400000 },
+      store: new MemoryStore({ checkPeriod: 86400000 }),
+      resave: false,
+      secret: "fgsfds",
+    })
+  )
   .use(passport.initialize())
   .use(passport.session())
   .get("/picramp/login", authenticate({ dev }), (req, res) =>
