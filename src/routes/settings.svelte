@@ -84,9 +84,11 @@
   <p>
     <a
       href={`javascript:(function() {
-    fetch(document.getElementsByClassName('complete-Main_Img')[0].children[0].src).then(img => img.blob()).then(blob => {
+    const url = document.getElementsByClassName('complete-Main_Img')[0].children[0].src;
+    fetch(url).then(img => img.blob()).then(blob => {
     const formData = new FormData();
     formData.append("file", blob);
+    formData.append("name", url.split('/').slice(-1)[0]);
     fetch('https://objelisks.garden/picramp/upload', {method: "POST", body: formData, credentials: "include"})
     })
     })();`}>picrew bookmarklet</a>: drag this onto your bookmark bar to make a

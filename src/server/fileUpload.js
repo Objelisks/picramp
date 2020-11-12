@@ -31,18 +31,25 @@ app.post("/", async (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send("No files were uploaded.");
   }
-  const file = req.files.file;
+  const file = req.files?.file;
+  const fileName = req.body?.name;
+  if (!fileName || !file) {
+    return res.status(400).send("File not uploaded correctly.");
+  }
+
   file.mv(
-    path.join(__dirname, `../../../static/images/${file.name}`),
+    path.join(__dirname, `../../../static/images/${fileName}`),
     async (err) => {
       if (err) return res.status(500).send(err);
+
+      console.log(req.files, req.body);
 
       // TODO: turn this all into an IO hook in fortune
       const userId = req.user?.id;
       if (!userId) return res.status(400).send("Not logged in.");
 
       // extract picrew url, id
-      const nameParts = file.name.split("_");
+      const nameParts = fileName.split("_");
       const picrewUrl = nameParts[0];
       const picId = nameParts[1]; // TODO: dedupe uploads
 
@@ -60,27 +67,32 @@ app.post("/", async (req, res) => {
             return res.payload.records[0];
           } else {
             // create a new picrew
-            return picrewApi
-              .create("picrew", [
-                {
-                  name: await picrewName(picrewUrl),
-                  url: picrewUrl,
-                  created: new Date(),
-                },
-              ])
-              .then((res) => {
-                newPicrew = true;
-                return res.payload.records[0];
-              });
+            const name = await picrewName(picrewUrl);
+            if (!name || name === "") {
+              return Promise.resolve(null);
+            } else {
+              return picrewApi
+                .create("picrew", [
+                  {
+                    name,
+                    url: picrewUrl,
+                    created: new Date(),
+                  },
+                ])
+                .then((res) => {
+                  newPicrew = true;
+                  return res.payload.records[0];
+                });
+            }
           }
         });
 
       // create the pic entry
       const picResponse = await picrewApi.create("pic", {
         camper: userId,
-        picrew: picrew.id,
+        picrew: picrew.id ?? null,
         created: new Date(),
-        url: `/images/${file.name}`,
+        url: `/images/${fileName}`,
       });
       const pic = picResponse.payload.records[0];
 
