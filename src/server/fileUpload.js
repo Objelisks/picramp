@@ -27,6 +27,39 @@ const picrewName = (picrewUrl) =>
     )
     .then((matches) => matches?.[1] ?? "picrew");
 
+export const findOrCreatePicrew = (picrewUrl, picId, out) => 
+  picrewApi.find("picrew", undefined, {
+    match: {
+      url: picrewUrl,
+    },
+  })
+  .then(async (res) => {
+    if (res.payload.count > 0) {
+      // found an existing picrew
+      return res.payload.records[0];
+    } else {
+      // create a new picrew
+      const name = await picrewName(picrewUrl);
+      if (!name || name === "") {
+        return Promise.resolve(null);
+      } else {
+        return picrewApi
+          .create("picrew", [
+            {
+              name,
+              url: picrewUrl,
+              created: new Date(),
+              displayPic: picId,
+            },
+          ])
+          .then((res) => {
+            out.newPicrew = true;
+            return res.payload.records[0];
+          });
+      }
+    }
+  });
+
 app.post("/", async (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send("No files were uploaded.");
@@ -52,39 +85,9 @@ app.post("/", async (req, res) => {
       const picId = nameParts[1]; // TODO: dedupe uploads
 
       // find or create picrew entry
-      let newPicrew = false;
-      const picrew = await picrewApi
-        .find("picrew", undefined, {
-          match: {
-            url: picrewUrl,
-          },
-        })
-        .then(async (res) => {
-          if (res.payload.count > 0) {
-            // found an existing picrew
-            return res.payload.records[0];
-          } else {
-            // create a new picrew
-            const name = await picrewName(picrewUrl);
-            if (!name || name === "") {
-              return Promise.resolve(null);
-            } else {
-              return picrewApi
-                .create("picrew", [
-                  {
-                    name,
-                    url: picrewUrl,
-                    created: new Date(),
-                    displayPic: null,
-                  },
-                ])
-                .then((res) => {
-                  newPicrew = true;
-                  return res.payload.records[0];
-                });
-            }
-          }
-        });
+      const out = { newPicrew };
+      const picrew = findOrCreatePicrew(picrewUrl, null, out);
+      let newPicrew = out.newPicrew;
 
       // create the pic entry
       const picResponse = await picrewApi.create("pic", {

@@ -12,6 +12,7 @@ import path from "path";
 import creds from "./creds.json";
 import store, { picrewApi, htmlListener } from "./server/picrewApi.js";
 import fileUpload from "./server/fileUpload.js";
+import { cleanupPicrews } from "./server/cleanupPicrews.js";
 
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === "development";
@@ -150,6 +151,7 @@ express()
   })
   .use("/picramp/upload", lockedApi, fileUpload)
   .use("/picramp/rest", lockedApi, store)
+  .use("/picramp/cleanPicrews", (req, res, next) => { cleanupPicrews().then(() => res.status(200).send('cleaned picrews')).catch((e) => res.status(500).send('failed to clean' + e)); })
   .use("/picramp/db", dev ? htmlListener : (_, __, next) => next())
   .use(
     "/picramp",
