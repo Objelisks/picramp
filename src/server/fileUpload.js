@@ -85,7 +85,7 @@ app.post("/", async (req, res) => {
       const picId = nameParts[1]; // TODO: dedupe uploads
 
       // find or create picrew entry
-      const out = { newPicrew };
+      const out = { newPicrew: false };
       const picrew = findOrCreatePicrew(picrewUrl, null, out);
       let newPicrew = out.newPicrew;
 
