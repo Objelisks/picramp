@@ -85,7 +85,7 @@
       <li>
         <a
           aria-current={segment === 'settings' ? 'page' : undefined}
-          href="settings">settings</a>
+          href="settings">upload</a>
       </li>
       <li class:login={true}>{$session.camper.name}</li>
     {/if}
