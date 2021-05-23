@@ -95,6 +95,11 @@
     button which will upload finished picrews to here from the picrew site!
   </p>
 
+  <p>
+    Click a pic to set it as your display pic! For best results, keep the image filename the same
+    as it defaults in picrew (i.e. "186583_zaKhLGl5.png")
+  </p>
+
   <DisplayGrid small>
     {#if json?.included}
       {#each json.included as pic}
