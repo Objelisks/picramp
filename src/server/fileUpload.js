@@ -32,7 +32,7 @@ app.post("/", async (req, res) => {
     return res.status(400).send("No files were uploaded.");
   }
   const file = req.files?.file;
-  const fileName = req.body?.name;
+  const fileName = file?.name;
   if (!fileName || !file) {
     return res.status(400).send("File not uploaded correctly.");
   }
@@ -41,8 +41,6 @@ app.post("/", async (req, res) => {
     path.join(__dirname, `../../../static/images/${fileName}`),
     async (err) => {
       if (err) return res.status(500).send(err);
-
-      console.log(req.files, req.body);
 
       // TODO: turn this all into an IO hook in fortune
       const userId = req.user?.id;
@@ -77,6 +75,7 @@ app.post("/", async (req, res) => {
                     name,
                     url: picrewUrl,
                     created: new Date(),
+                    displayPic: null,
                   },
                 ])
                 .then((res) => {
