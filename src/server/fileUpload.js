@@ -86,7 +86,7 @@ app.post("/", async (req, res) => {
 
       // find or create picrew entry
       const out = { newPicrew: false };
-      const picrew = findOrCreatePicrew(picrewUrl, null, out);
+      const picrew = await findOrCreatePicrew(picrewUrl, null, out);
       let newPicrew = out.newPicrew;
 
       // create the pic entry
