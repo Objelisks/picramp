@@ -22,7 +22,7 @@ const picrewName = (picrewUrl) =>
     .then((response) => response.text())
     .then((page) =>
       page.match(
-        /<meta property="og:title" content="(\p{Any}*?)｜Picrew"\/>\n/u
+        /<title>(\p{Any}*?)｜Picrew/u
       )
     )
     .then((matches) => matches?.[1] ?? "picrew");
